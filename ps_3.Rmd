@@ -143,6 +143,57 @@ capm_gt %>%
   annotate("text", x = -.15, y = 11, label = "Average Premium: -0.000294")
 ```
 
+**E) **
+```{r, echo=FALSE}
+msft <- capm_gt %>%
+  filter(company == "msft")
 
+reg_msft <- lm(company_risk ~ mkt_risk, msft) %>% 
+  tidy(conf.int = TRUE)
+
+gm <- capm_gt %>%
+  filter(company == "gm")
+
+reg_gm <- lm(company_risk ~ mkt_risk, gm) %>% 
+  tidy(conf.int = TRUE)
+
+xom <- capm_gt %>%
+  filter(company == "xom")
+
+reg_xom <- lm(company_risk ~ mkt_risk, xom) %>% 
+  tidy(conf.int = TRUE)
+```
+  
+Using OLS regression of company risk premium on the market risk premium, we find
+that the CAPM beta values for the three companies are as follows: Microsoft:
+1.332; General Motors: 1.302; Exxon-Mobil: 0.395. These security beta values
+sugest Microsoft and General Motors are more aggressive stocks - with Microsoft
+being slightly more aggressive - while Exxon-Mobil presents a more defensive
+position.  
+  
+**F) **  
+```{r}
+null <- 1
+se_msft <- 0.174326
+beta_msft <- 1.33228
+t_msft <- (beta_msft - null) / (se_msft)
+p_msft <- 2*(1 - 0.9716)
+# p-value Microsoft 0.0568
+
+se_gm <- 0.22656
+beta_gm <- 1.30222
+t_gm <- (beta_gm - null) / (se_gm)
+p_gm <- 2*(1 - 0.9082)
+# p-value GM 0.1836
+
+se_xom <- 0.1005
+beta_xom <- 0.3945
+t_xom <- (beta_xom - null) / (se_xom)
+# p-value Exxon < 0.0001
+
+
+```
+
+Based on the above calculations, we find the p-value for Microsoft is 0.0568, which is greater than the alpha value of 0.05 at a 5% significance level. Therefore, we reject the null hypothesis that the beta for Microsoft is equal to 1 at a 5% significance level. The p-value of General Motors is 0.1836, well above 0.05; we are unable to reject the null hypothesis that the beta of General Motors is 1. The p-value of Exxon-Mobil is extremely close to 0 and well below 0.05, meaning we are able to reject the null hypothesis that the beta of Exxon-Mobil is equal to 1.
 
 
