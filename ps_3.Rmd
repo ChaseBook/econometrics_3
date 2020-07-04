@@ -1,0 +1,148 @@
+---
+title: "Econometrics Assignment 3"
+author: "Chase Bookin"
+date: "July 2, 2020"
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(tidycensus)
+library(ggthemes)
+library(ggplot2)
+library(janitor)
+library(dplyr)
+library(gt)
+library(readxl)
+library(sf)
+library(scales)
+library(magrittr)
+library(haven)
+library(infer)
+library(Lahman)
+library(xml2)
+library(rvest)
+library(devtools)
+library(broom)
+library(retrosheet)
+library(skimr)
+library(knitr)
+library(tinytex)
+library(lubridate)
+library(pander)
+```
+
+
+```{r, include=FALSE}
+capm <- read_xlsx("CAPM.xlsx") %>% 
+  mutate(date = ymd(date),
+         "Market Risk Premium" = mkt - riskfree,
+         "Risk GM" = gm - riskfree,
+         "Risk Microsoft" = msft - riskfree,
+         "Risk Exxon" = xom - riskfree) %>%
+  rename("Date" = date,
+         "General Motors" = gm,
+         "Microsoft" = msft,
+         "Exxon Mobil" = xom,
+         "Market Return" = mkt,
+         "Risk Free Rate" = riskfree)
+
+capm_summary <- capm %>%
+  select(-Date)
+
+panderOptions('round', 5)
+skim_with(numeric = sfl(mean, sd))
+skim_without_charts(capm_summary)
+```
+
+```{r, include=FALSE}
+capm_gt <- read_xlsx("CAPM.xlsx") %>% 
+  mutate(date = ymd(date)) %>% 
+  pivot_longer(
+    cols = c(gm, msft, xom),
+    names_to = "company",
+    values_to = "company_return"
+  ) %>% 
+  mutate("mkt_risk" = mkt - riskfree,
+         "company_risk" = company_return - riskfree)
+
+capm_gt_return <- capm_gt %>% 
+  group_by(company) %>% 
+  summarize(Mean = mean(company_return),
+            SD = sd(company_return),
+            Min = min(company_return),
+            Max = max(company_return)) %>% 
+  mutate(company = ifelse(company == "gm", "General Motors Return",
+                          ifelse(company == "msft", "Microsoft Return",
+                                 "Exxon-Mobil Return"))) %>% 
+  rename(Variable = company)
+
+capm_gt_risk <- capm_gt %>% 
+  group_by(company) %>% 
+  summarize(Mean = mean(company_risk),
+            SD = sd(company_risk),
+            Min = min(company_risk),
+            Max = max(company_risk)) %>% 
+  mutate(company = ifelse(company == "gm", "General Motors Risk Premium",
+                          ifelse(company == "msft", "Microsoft Risk Premium",
+                                 "Exxon-Mobil Risk Premium"))) %>% 
+  rename(Variable = company)
+
+capm_gt_misc <- read_xlsx("CAPM.xlsx") %>% 
+  mutate(date = ymd(date),
+         "mkt_risk" = mkt - riskfree) %>% 
+  pivot_longer(
+    cols = c(mkt_risk, riskfree, mkt),
+    names_to = "glorp",
+    values_to = "misc"
+  ) %>% 
+  group_by(glorp) %>% 
+  summarize(Mean = mean(misc),
+            SD = sd(misc),
+            Min = min(misc),
+            Max = max(misc)) %>% 
+  rename(Variable = glorp) %>% 
+  mutate(Variable = ifelse(Variable == 'mkt', "Market Return",
+                           ifelse(Variable == 'riskfree', "Risk Free Return",
+                                  "Market Risk Premium")))
+
+guapo_gt <- bind_rows(capm_gt_return, capm_gt_risk, capm_gt_misc)
+
+  
+```
+
+**C) Data Summary: **
+```{r, echo=FALSE}
+gt(data = guapo_gt) %>% 
+  fmt_number(
+      columns = vars(Mean, SD, Min, Max),
+      decimals = 4
+    ) 
+```
+  
+  
+**D) **  
+```{r, echo=FALSE}
+capm_gt %>%
+  filter(company == "msft") %>% 
+  ggplot(aes(x = company_risk)) +
+  geom_histogram(bins = 50, color = "black", fill = "lightblue") +
+  theme_light() +
+  scale_x_continuous(breaks = c(-.4, -.2, 0, .2, .4)) +
+  labs(
+    title = "Distribution of Microsoft Risk Premium",
+    subtitle = "Using data from 120 monthly observations from January 1999 - December 2008",
+    x = "Risk Premium",
+    y = "Frequency"
+  ) +
+  geom_vline(xintercept = -.0003, linetype = "longdash", color = "black") +
+  annotate("text", x = -.15, y = 11, label = "Average Premium: -0.000294")
+```
+
+
+
+
