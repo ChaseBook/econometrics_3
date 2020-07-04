@@ -132,7 +132,8 @@ capm_gt %>%
   ggplot(aes(x = company_risk)) +
   geom_histogram(bins = 50, color = "black", fill = "lightblue") +
   theme_light() +
-  scale_x_continuous(breaks = c(-.4, -.2, 0, .2, .4)) +
+  scale_x_continuous(breaks = c(-.4, -.3, -.2, -.1, 0, .1, .2, .3, .4)) +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8, 10, 12, 14)) +
   labs(
     title = "Distribution of Microsoft Risk Premium",
     subtitle = "Using data from 120 monthly observations from January 1999 - December 2008",
@@ -140,7 +141,7 @@ capm_gt %>%
     y = "Frequency"
   ) +
   geom_vline(xintercept = -.0003, linetype = "longdash", color = "black") +
-  annotate("text", x = -.15, y = 11, label = "Average Premium: -0.000294")
+  annotate("text", x = -.15, y = 11.5, label = "Average Premium: -0.000294")
 ```
 
 **E) **
@@ -194,6 +195,16 @@ t_xom <- (beta_xom - null) / (se_xom)
 
 ```
 
-Based on the above calculations, we find the p-value for Microsoft is 0.0568, which is greater than the alpha value of 0.05 at a 5% significance level. Therefore, we reject the null hypothesis that the beta for Microsoft is equal to 1 at a 5% significance level. The p-value of General Motors is 0.1836, well above 0.05; we are unable to reject the null hypothesis that the beta of General Motors is 1. The p-value of Exxon-Mobil is extremely close to 0 and well below 0.05, meaning we are able to reject the null hypothesis that the beta of Exxon-Mobil is equal to 1.
+Based on the above calculations, we find the p-value for Microsoft is 0.0568,
+which is greater than the alpha value of 0.05 at a 5% significance level.
+Therefore, we fail to reject the null hypothesis that the beta for Microsoft is equal to
+1 at a 5% significance level. The p-value of General Motors is 0.1836, well
+above 0.05; we are unable to reject the null hypothesis that the beta of General
+Motors is 1. The p-value of Exxon-Mobil is extremely close to 0 and well below
+0.05, meaning we are able to reject the null hypothesis that the beta of
+Exxon-Mobil is equal to 1.  
 
+**G) **  
+
+For a company in a given month, a factor that may contribute to the error term is a new product that increases the stock's monthly return above its normal performance.
 
