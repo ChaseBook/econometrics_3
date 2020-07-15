@@ -1,7 +1,7 @@
 ---
 title: "Econometrics Assignment 3"
-author: "Chase Bookin"
-date: "July 2, 2020"
+author: "Chase Bookin & Cole Price"
+date: "July 7, 2020"
 output:
   pdf_document: default
   word_document: default
@@ -124,6 +124,7 @@ gt(data = guapo_gt) %>%
     ) 
 ```
   
+From this summary table, we can see that the average return for General Motors is negative with a value of -0.0122. The other two stocks - Microsoft and Exxon-Mobil - each demonstrate a positive mean return. Additionally, General Motors has the highest standard deviation on its returns, more than double the Exxon-Mobil standard deviation and slightly above Microsoft's standard deviation. We will see that this extra volatility demonstrated by both General Motors and Microsoft as compared to Exxon-Mobil will be mirrored in the securities' beta values. The market return in this period had an average value of 0.0009 with a standard deviation of 0.0464, only slightly lower than Exxon-Mobil's standard deviation. The risk-free return in this period was 0.0026 on average wit ha standard deviation of 0.0014. This extremely low volatility is what we expect from U.S. Treasury Bills.
   
 **D) **  
 ```{r, echo=FALSE}
@@ -143,6 +144,9 @@ capm_gt %>%
   geom_vline(xintercept = -.0003, linetype = "longdash", color = "black") +
   annotate("text", x = -.15, y = 11.5, label = "Average Premium: -0.000294")
 ```
+  
+This histogram demonstrates the fairly normal distribution of the Microsoft risk premium. Most of the monthly risk premium data fall in the range from -0.1 to 0.1 with several observations well beyond this mark in both positive and negative directions. The most common range of risk premiums recorded was in the bin just above 0 from about 0 to 0.02.
+
 
 **E) **
 ```{r, echo=FALSE}
@@ -206,5 +210,5 @@ Exxon-Mobil is equal to 1.
 
 **G) **  
 
-For a company in a given month, a factor that may contribute to the error term is a new product that increases the stock's monthly return above its normal performance.
+For a company in a given month, a factor that may contribute to the error term is a new product that increases the stock's monthly return above its normal performance. Additionally, a firm's quarterly earnings report may very well affect the stock's returns for a given month, as could a change in leadership at the company.
 
